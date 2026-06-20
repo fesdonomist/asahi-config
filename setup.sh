@@ -20,6 +20,8 @@ sudo dnf remove -y \
   abrt \
   fedora-bookmarks \
   kdebugsettings \
+  *akonadi* \
+  xwaylandvideobridge \
   2>/dev/null || true
 
 # ---------------------------------------------------------------------------
@@ -150,3 +152,14 @@ sudo grubby --update-kernel=ALL \
 
 echo ""
 echo "==> Setup complete. Reboot for kernel parameter changes to take effect."
+
+# ---------------------------------------------------------------------------
+# packagekit: Make it exit early to save memory
+# ---------------------------------------------------------------------------
+echo "IdleExit=20" | sudo tee -a /etc/PackageKit/PackageKit.conf
+
+# ---------------------------------------------------------------------------
+# systemd: Disable superfluous services
+# ---------------------------------------------------------------------------
+sudo systemctl disable switcheroo-control
+kwriteconfig6 --file ~/.config/autostart/org.kde.discover.notifier.desktop --group "Desktop Entry" --key Hidden true
